@@ -101,9 +101,12 @@ export function AnswerLine({ step, topology, scheme, answers }: Props) {
 			arrayOfTargets = [...arrayOfTargets].filter((num) => num !== inputForward.target);
 		}
 
+		// TODO: add answer to the higher state and enable next line
+
 		event.stopPropagation();
 	};
 
+	// TODO: disable line if answer length is not this index?
 	return (
 		<div style={answerLineStyle}>
 			{`ssh `}
