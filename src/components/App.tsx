@@ -13,14 +13,14 @@ const appStyle: CSSProperties = {
 
 export function App() {
 	// TODO: problem selection (random or select)
-	const { scheme, topology } = problems[0];
+	const { scheme, topology } = problems[1];
 
 	return (
 		<div style={appStyle}>
 			<TopBar />
 			<NetworkDiagram networkTopology={topology} />
 			<SchemeOfManeuver scheme={scheme} topology={topology} />
-			<AnswerBox />
+			<AnswerBox scheme={scheme} topology={topology} />
 		</div>
 	);
 }

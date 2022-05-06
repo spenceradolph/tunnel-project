@@ -2,13 +2,13 @@
 // -> 192.168.0.2
 // --< 192.168.0.3
 
-type step = {
+export type Step = {
 	type: 'forward' | 'reverse';
 	through: number;
 	target: number;
 };
 
-export type schemeOfManeuver = step[];
+export type schemeOfManeuver = Step[];
 
 type box = {
 	user: string;

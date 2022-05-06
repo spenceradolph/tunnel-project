@@ -14,17 +14,17 @@ const problem0: Problem = {
 		{
 			ip: '192.168.0.1',
 			sshPort: 22,
-			user: 'steve',
+			user: 'steve0',
 		},
 		{
 			ip: '192.168.0.2',
 			sshPort: 22,
-			user: 'steve',
+			user: 'steve1',
 		},
 		{
 			ip: '192.168.0.3',
 			sshPort: 22,
-			user: 'steve',
+			user: 'steve2',
 		},
 	],
 	scheme: [
@@ -54,17 +54,17 @@ const problem1: Problem = {
 		{
 			ip: '10.0.0.1',
 			sshPort: 22,
-			user: 'john',
+			user: 'john0',
 		},
 		{
 			ip: '10.0.0.2',
 			sshPort: 22,
-			user: 'john',
+			user: 'john1',
 		},
 		{
 			ip: '10.0.0.3',
 			sshPort: 22,
-			user: 'john',
+			user: 'john2',
 		},
 	],
 	scheme: [
