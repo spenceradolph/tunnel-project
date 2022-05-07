@@ -1,6 +1,6 @@
 import { CSSProperties, Dispatch, MouseEventHandler, useState } from 'react';
 import { NetworkTopology, schemeOfManeuver, Step } from '../networkSection';
-import { Answers } from './AnswerBox';
+import { Answers } from '../App';
 
 const answerLineStyle: CSSProperties = {
 	height: '50px',

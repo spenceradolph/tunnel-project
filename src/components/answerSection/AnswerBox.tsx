@@ -1,4 +1,4 @@
-import { CSSProperties, MouseEventHandler, useEffect, useState } from 'react';
+import { CSSProperties, MouseEventHandler, useEffect } from 'react';
 import { NetworkTopology, schemeOfManeuver } from '../networkSection';
 import { AnswerLine } from './AnswerLine';
 
@@ -7,34 +7,23 @@ const sectionStyle: CSSProperties = {
 	height: '250px',
 };
 
-export type Answers = {
-	localPort: number;
-	target: number;
-	direction: 'forward' | 'reverse';
-	targetPort: number;
-}[][];
-
 type Props = {
 	scheme: schemeOfManeuver;
 	topology: NetworkTopology;
+	answerHook: any;
 };
 
-export function AnswerBox({ scheme, topology }: Props) {
-	const [answers, setAnswers] = useState<Answers>([
-		[
-			{ localPort: 2222, target: 1, direction: 'forward', targetPort: 22 },
-			{ localPort: 3333, target: 2, direction: 'forward', targetPort: 22 },
-		],
-	]);
+export function AnswerBox({ scheme, topology, answerHook }: Props) {
+	const [answers, setAnswers] = answerHook;
 
 	useEffect(() => {
 		const stored = localStorage.getItem('tunnel');
 		if (stored !== null) setAnswers(JSON.parse(stored));
 	}, []);
 
-	useEffect(() => {
-		if (answers.length === scheme.length) alert('win');
-	}, [answers, scheme]);
+	// useEffect(() => {
+	// 	setAnswers([]);
+	// }, [scheme]);
 
 	const saveLocal: MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
@@ -60,6 +49,7 @@ export function AnswerBox({ scheme, topology }: Props) {
 			<button onClick={saveLocal}>Save LS</button>
 			<button onClick={clearLocal}>Clear LS</button>
 			<div style={sectionStyle}>{answerLines}</div>
+			{answers.length === scheme.length ? 'WIN' : null}
 		</>
 	);
 }
