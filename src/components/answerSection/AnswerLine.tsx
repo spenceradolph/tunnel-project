@@ -16,9 +16,10 @@ type Props = {
 	scheme: schemeOfManeuver;
 	answers: Answers;
 	setAnswers: Dispatch<React.SetStateAction<Answers>>;
+	index: number;
 };
 
-export function AnswerLine({ step, topology, scheme, answers }: Props) {
+export function AnswerLine({ step, topology, scheme, answers, index, setAnswers }: Props) {
 	// local state
 	const [userInput, setUserInput] = useState('');
 	const [ipInput, setIpInput] = useState('');
@@ -33,11 +34,11 @@ export function AnswerLine({ step, topology, scheme, answers }: Props) {
 		arrayOfTargets.push(thisStep.target);
 	}
 
+	const { through } = step;
+	const { user } = topology[step.target];
+
 	const checkAnswer: MouseEventHandler<HTMLInputElement> = (event) => {
 		event.preventDefault();
-
-		const { user } = topology[step.target];
-		const { target, through } = step;
 
 		// check user
 		if (userInput !== user) return alert('wrong user!');
@@ -62,7 +63,7 @@ export function AnswerLine({ step, topology, scheme, answers }: Props) {
 			}
 		}
 
-		let inputForwards: { localPort: number; target: number; direction: 'forward' | 'reverse'; arrayTPort: number }[] = [];
+		let inputForwards: { localPort: number; target: number; direction: 'forward' | 'reverse'; targetPort: number }[] = [];
 
 		// check forward
 		// TODO: refactor this mess
@@ -88,13 +89,13 @@ export function AnswerLine({ step, topology, scheme, answers }: Props) {
 				return box.ip === arrayTarget;
 			});
 
-			inputForwards.push({ localPort: parseInt(arrayPort), target: targetNumber, direction: direction === 'L' ? 'forward' : 'reverse', arrayTPort: parseInt(arrayTPort) }); // TODO: fix potential errors with string and int
+			inputForwards.push({ localPort: parseInt(arrayPort), target: targetNumber, direction: direction === 'L' ? 'forward' : 'reverse', targetPort: parseInt(arrayTPort) }); // TODO: fix potential errors with string and int
 		}
 
 		// alert(inputForwards);
 		for (const inputForward of inputForwards) {
 			// verify that the target matches the sshPort
-			if (inputForward.arrayTPort !== topology[inputForward.target].sshPort) return alert('bad target port');
+			if (inputForward.targetPort !== topology[inputForward.target].sshPort) return alert('bad target port');
 
 			// verify that all the targets are correct
 			if (!arrayOfTargets.includes(inputForward.target)) return alert('target not needed');
@@ -102,19 +103,38 @@ export function AnswerLine({ step, topology, scheme, answers }: Props) {
 		}
 
 		// TODO: add answer to the higher state and enable next line
+		setAnswers([...answers, [...inputForwards]]);
 
 		event.stopPropagation();
 	};
 
-	// TODO: disable line if answer length is not this index?
+	// disabled (TODO: hidden for now, but should be 'disabled' but visible in the future)
+	// if (index > answers.length) return null;
+
+	// if (index < answers.length)
+	// TODO: refactor this (already done up top)
+	let answerPort = -2;
+	if (through === -1) answerPort = topology[step.target].sshPort;
+	if (through !== -1) {
+		for (const thisAnswer of answers) {
+			for (const thisForward of thisAnswer) {
+				const { localPort, target } = thisForward;
+				if (target !== step.target) continue;
+				answerPort = localPort;
+			}
+		}
+	}
+
+	const answerIp = through !== -1 ? '127.0.0.1' : topology[step.target].ip;
+
 	return (
 		<div style={answerLineStyle}>
-			{`ssh `}
-			<input placeholder="user" onChange={(e) => setUserInput(e.target.value)}></input>
+			{`${index} ssh `}
+			<input placeholder="user" onChange={(e) => setUserInput(e.target.value)} value={index < answers.length ? topology[step.target].user : userInput} disabled={index !== answers.length} />
 			{`@`}
-			<input placeholder="ip" onChange={(e) => setIpInput(e.target.value)}></input>
+			<input placeholder="ip" onChange={(e) => setIpInput(e.target.value)} value={index < answers.length ? answerIp : ipInput} disabled={index !== answers.length} />
 			{` -p `}
-			<input placeholder="port" onChange={(e) => setPortInput(e.target.value)}></input>
+			<input placeholder="port" onChange={(e) => setPortInput(e.target.value)} value={index < answers.length ? answerPort : portInput} disabled={index !== answers.length} />
 			{` `}
 			{[...Array(numForwards)].map((e, i) => {
 				return (
@@ -126,10 +146,16 @@ export function AnswerLine({ step, topology, scheme, answers }: Props) {
 							newArray[i] = e.target.value;
 							setForwardInputs(newArray);
 						}}
-					></input>
+						disabled={index !== answers.length}
+						value={
+							index < answers.length
+								? `${answers[index][i].direction === 'forward' ? '-L ' : '-R '}${answers[index][i].localPort}:${topology[answers[index][i].target].ip}:${answers[index][i].targetPort}`
+								: forwardInputs[i]
+						}
+					/>
 				);
 			})}
-			<input type="submit" onClick={checkAnswer}></input>
+			<input type="submit" onClick={checkAnswer} disabled={index < answers.length || index > answers.length} />
 		</div>
 	);
 }

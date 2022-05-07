@@ -7,12 +7,12 @@ const sectionStyle: CSSProperties = {
 	height: '250px',
 };
 
-export type Answers = [
-	{
-		localPort: number;
-		target: number;
-	}[]
-];
+export type Answers = {
+	localPort: number;
+	target: number;
+	direction: 'forward' | 'reverse';
+	targetPort: number;
+}[][];
 
 type Props = {
 	scheme: schemeOfManeuver;
@@ -22,8 +22,8 @@ type Props = {
 export function AnswerBox({ scheme, topology }: Props) {
 	const [answers, setAnswers] = useState<Answers>([
 		[
-			{ localPort: 2222, target: 1 },
-			{ localPort: 3333, target: 2 },
+			{ localPort: 2222, target: 1, direction: 'forward', targetPort: 22 },
+			{ localPort: 3333, target: 2, direction: 'forward', targetPort: 22 },
 		],
 	]);
 
@@ -31,6 +31,10 @@ export function AnswerBox({ scheme, topology }: Props) {
 		const stored = localStorage.getItem('tunnel');
 		if (stored !== null) setAnswers(JSON.parse(stored));
 	}, []);
+
+	useEffect(() => {
+		if (answers.length === scheme.length) alert('win');
+	}, [answers, scheme]);
 
 	const saveLocal: MouseEventHandler<HTMLButtonElement> = (e) => {
 		e.preventDefault();
@@ -45,8 +49,10 @@ export function AnswerBox({ scheme, topology }: Props) {
 	};
 
 	const answerLines = scheme.map((step, index) => {
-		return <AnswerLine key={index} step={step} topology={topology} scheme={scheme} answers={answers} setAnswers={setAnswers} />;
+		return <AnswerLine key={index} index={index} step={step} topology={topology} scheme={scheme} answers={answers} setAnswers={setAnswers} />;
 	});
+
+	// if (answers.length === scheme.length) alert('win!');
 
 	return (
 		<>
