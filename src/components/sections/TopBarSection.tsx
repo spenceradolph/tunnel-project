@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, Dispatch } from 'react';
 import { AllActions, AppState } from '../../stateManagement';
 
 const barStyle: CSSProperties = {
@@ -8,7 +8,7 @@ const barStyle: CSSProperties = {
 
 type Props = {
 	state: AppState;
-	dispatch: React.Dispatch<AllActions>;
+	dispatch: Dispatch<AllActions>;
 };
 
 export function TopBar({ state, dispatch }: Props) {

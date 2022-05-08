@@ -1,4 +1,4 @@
-import { ChangeEventHandler, CSSProperties, MouseEventHandler } from 'react';
+import React, { ChangeEventHandler, CSSProperties, Dispatch, MouseEventHandler } from 'react';
 import { problems } from '../../problemSets';
 import { AllActions, Answers, AppState } from '../../stateManagement';
 
@@ -16,7 +16,7 @@ const answerLineStyle: CSSProperties = {
 
 type Props = {
 	state: AppState;
-	dispatch: React.Dispatch<AllActions>;
+	dispatch: Dispatch<AllActions>;
 };
 
 export function AnswerSection({ state, dispatch }: Props) {
