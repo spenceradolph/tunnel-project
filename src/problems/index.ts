@@ -1,10 +1,4 @@
-import { NetworkTopology, schemeOfManeuver } from '../components/networkSection';
-
-// TODO: consider putting this with other typings
-type Problem = {
-	topology: NetworkTopology;
-	scheme: schemeOfManeuver;
-};
+import { Problem } from '../types';
 
 // > 192.168.0.1
 // -> 192.168.0.2

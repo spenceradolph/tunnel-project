@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react';
-import { NetworkTopology } from './networkTypes';
+import { NetworkTopology } from '../../types';
 
 const networkDiagramStyle: CSSProperties = {
 	width: '100%',

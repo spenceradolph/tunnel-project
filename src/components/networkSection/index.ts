@@ -1,2 +1,1 @@
-export * from "./NetworkDiagram";
-export * from "./networkTypes";
+export * from './NetworkDiagram';

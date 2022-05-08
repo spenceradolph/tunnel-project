@@ -1,4 +1,5 @@
 import { CSSProperties } from 'react';
+import { problems } from '../problems';
 
 const barStyle: CSSProperties = {
 	width: '100%',
@@ -10,9 +11,10 @@ type Props = {
 	selectedProblem: number;
 	setSelectedProblem: React.Dispatch<React.SetStateAction<number>>;
 	answerHook: any;
+	problemsLength: number;
 };
 
-export function TopBar({ selectedProblem, setSelectedProblem, answerHook }: Props) {
+export function TopBar({ selectedProblem, setSelectedProblem, answerHook, problemsLength }: Props) {
 	const [answers, setAnswers] = answerHook;
 
 	return (
@@ -21,11 +23,11 @@ export function TopBar({ selectedProblem, setSelectedProblem, answerHook }: Prop
 			<button
 				style={{ float: 'right', marginRight: '500px' }}
 				onClick={() => {
-					setSelectedProblem(0);
+					setSelectedProblem((selectedProblem + 1) % problemsLength);
 					setAnswers([]);
 				}}
 			>
-				Change Problem
+				Cycle To Next Problem
 			</button>
 		</div>
 	);

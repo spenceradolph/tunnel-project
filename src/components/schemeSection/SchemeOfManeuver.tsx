@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react';
-import { NetworkTopology, schemeOfManeuver } from '../networkSection';
+import { NetworkTopology, schemeOfManeuver } from '../../types';
 
 const schemeStyle: CSSProperties = {
 	backgroundColor: 'yellow',

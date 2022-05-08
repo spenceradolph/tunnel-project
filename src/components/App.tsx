@@ -1,5 +1,6 @@
-import { CSSProperties, useEffect, useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import { problems } from '../problems';
+import { Answers } from '../types';
 import { AnswerBox } from './answerSection';
 import { NetworkDiagram } from './networkSection';
 import { SchemeOfManeuver } from './schemeSection';
@@ -10,13 +11,6 @@ const appStyle: CSSProperties = {
 	height: '100vh',
 	width: '100vw',
 };
-
-export type Answers = {
-	localPort: number;
-	target: number;
-	direction: 'forward' | 'reverse';
-	targetPort: number;
-}[][];
 
 export function App() {
 	// TODO: problem selection (random or select)
@@ -36,10 +30,10 @@ export function App() {
 
 	return (
 		<div style={appStyle}>
-			<TopBar {...{ selectedProblem, setSelectedProblem, answerHook }} />
+			<TopBar {...{ selectedProblem, setSelectedProblem, answerHook, problemsLength: problems.length }} />
 			<NetworkDiagram networkTopology={topology} />
-			<SchemeOfManeuver scheme={scheme} topology={topology} />
-			<AnswerBox scheme={scheme} topology={topology} answerHook={answerHook} />
+			<SchemeOfManeuver {...{ scheme, topology }} />
+			<AnswerBox {...{ scheme, topology, answerHook, selectedProblem }} />
 		</div>
 	);
 }

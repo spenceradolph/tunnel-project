@@ -1,5 +1,5 @@
 import { CSSProperties, MouseEventHandler, useEffect } from 'react';
-import { NetworkTopology, schemeOfManeuver } from '../networkSection';
+import { NetworkTopology, schemeOfManeuver } from '../../types';
 import { AnswerLine } from './AnswerLine';
 
 const sectionStyle: CSSProperties = {
@@ -11,15 +11,16 @@ type Props = {
 	scheme: schemeOfManeuver;
 	topology: NetworkTopology;
 	answerHook: any;
+	selectedProblem: any;
 };
 
-export function AnswerBox({ scheme, topology, answerHook }: Props) {
+export function AnswerBox({ scheme, topology, answerHook, selectedProblem }: Props) {
 	const [answers, setAnswers] = answerHook;
 
 	useEffect(() => {
 		const stored = localStorage.getItem('tunnel');
 		if (stored !== null) setAnswers(JSON.parse(stored));
-	}, []);
+	}, [setAnswers]);
 
 	// useEffect(() => {
 	// 	setAnswers([]);
