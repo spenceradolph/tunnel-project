@@ -1,4 +1,4 @@
-import { Problem } from '../types';
+import { Problem } from '../stateManagement';
 
 // > 10.0.0.1
 // -> 10.0.0.2
@@ -7,17 +7,17 @@ export const problem1: Problem = {
 	topology: [
 		{
 			ip: '10.0.0.1',
-			sshPort: 22,
+			sshPort: '22',
 			user: 'john0',
 		},
 		{
 			ip: '10.0.0.2',
-			sshPort: 22,
+			sshPort: '22',
 			user: 'john1',
 		},
 		{
 			ip: '10.0.0.3',
-			sshPort: 22,
+			sshPort: '22',
 			user: 'john2',
 		},
 	],
