@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 import { problems } from '../../problemSets';
-import { AllActions, AppState } from '../../stateManagement';
+import { AppState } from '../../stateManagement';
 
 const schemeStyle: CSSProperties = {
 	backgroundColor: 'lightgrey',
@@ -8,7 +8,6 @@ const schemeStyle: CSSProperties = {
 
 type Props = {
 	state: AppState;
-	dispatch: React.Dispatch<AllActions>;
 };
 
 export function SchemeOfManeuver({ state }: Props) {
@@ -22,11 +21,7 @@ export function SchemeOfManeuver({ state }: Props) {
 		const arrow = type === 'forward' ? `>` : `<`;
 		const { ip } = topology[target];
 
-		return (
-			<div key={i} style={{ marginLeft: '10px' }}>
-				{`${dashes} ${arrow} ${ip}`}
-			</div>
-		);
+		return <div key={i} style={{ marginLeft: '10px' }}>{`${dashes} ${arrow} ${ip}`}</div>;
 	});
 
 	return (

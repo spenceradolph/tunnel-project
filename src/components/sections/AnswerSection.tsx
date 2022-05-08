@@ -25,21 +25,18 @@ export function AnswerSection({ state, dispatch }: Props) {
 
 	const answerLines = scheme.map((step, i) => {
 		const disabled = submittedAnswers.length !== i;
-		const { through } = step;
-		const { user } = topology[step.target];
+		const { through, target } = step;
+		const { user, ip, sshPort } = topology[target];
 
 		const changeUser: ChangeEventHandler<HTMLInputElement> = (e) => dispatch({ type: 'change-user', user: e.target.value });
-		const answerUser = topology[step.target].user;
-		const userValue = submittedAnswers.length === i ? currentAnswerLine.user : submittedAnswers.length > i ? answerUser : '';
+		const userValue = submittedAnswers.length === i ? currentAnswerLine.user : submittedAnswers.length > i ? user : '';
 
 		const changeIp: ChangeEventHandler<HTMLInputElement> = (e) => dispatch({ type: 'change-ip', ip: e.target.value });
-		const answerIp = through !== -1 ? '127.0.0.1' : topology[step.target].ip;
+		const answerIp = through !== -1 ? '127.0.0.1' : ip;
 		const ipValue = submittedAnswers.length === i ? currentAnswerLine.ip : submittedAnswers.length > i ? answerIp : '';
 
 		const changePort: ChangeEventHandler<HTMLInputElement> = (e) => dispatch({ type: 'change-port', port: e.target.value });
-		let answerPort = '';
-		// TODO: consider refactor
-		if (through === -1) answerPort = topology[step.target].sshPort;
+		let answerPort = sshPort;
 		if (through !== -1) {
 			for (const thisAnswer of submittedAnswers) {
 				for (const thisForward of thisAnswer) {
@@ -56,7 +53,7 @@ export function AnswerSection({ state, dispatch }: Props) {
 		let numForwards = 0;
 		let arrayOfTargets: number[] = [];
 		for (const thisStep of scheme) {
-			if (step.target === thisStep.through) {
+			if (target === thisStep.through) {
 				arrayOfTargets.push(thisStep.target);
 				numForwards++;
 			}
@@ -69,65 +66,45 @@ export function AnswerSection({ state, dispatch }: Props) {
 			if (currentAnswerLine.user !== user) return alert('wrong user!');
 
 			// check ip
-			// if through == -1, ip is target
-			// otherwise 127.0.0.1
-			if (through === -1 && currentAnswerLine.ip !== topology[step.target].ip) return alert('wrong ip!');
+			if (through === -1 && currentAnswerLine.ip !== ip) return alert('wrong ip!');
 			if (through !== -1 && currentAnswerLine.ip !== '127.0.0.1') return alert('wrong ip!');
 
 			// check port
-			// if through == -1, port is 'sshPort'
-			// otherwise need to check previous answer
-			if (through === -1 && currentAnswerLine.port !== `${topology[step.target].sshPort}`) return alert('wrong port!');
+			if (through === -1 && currentAnswerLine.port !== sshPort) return alert('wrong port!');
 			if (through !== -1) {
 				for (const thisAnswer of submittedAnswers) {
 					for (const thisForward of thisAnswer) {
 						const { localPort, target } = thisForward;
 						if (target !== step.target) continue;
-						if (`${localPort}` !== currentAnswerLine.port) return alert('wrong port!');
+						if (localPort !== currentAnswerLine.port) return alert('wrong port!'); // doesn't match previous forward
 					}
 				}
 			}
 
+			// check forward (and finalize answer to save)
 			let inputForwards: Answers[0] = [];
-
-			// check forward
-			// TODO: refactor this mess
 			for (const localForward of currentAnswerLine.forwards) {
 				const nonWhite = localForward.replaceAll(' ', '');
-				if (nonWhite[0] !== '-') return alert('invalid format0');
-				if (nonWhite[1] !== 'L' && nonWhite[1] !== 'R') return alert('invalid format1');
-				const direction = nonWhite[1];
+				if (nonWhite[0] !== '-') return alert('invalid format');
+				if (nonWhite[1] !== 'L' && nonWhite[1] !== 'R') return alert('invalid format');
+				const direction = nonWhite[1] === 'L' ? 'forward' : 'reverse';
 				const restOfString = nonWhite.slice(2);
-				const [arrayPort, arrayTarget, arrayTPort] = restOfString.split(':'); // TODO: length of split may be not 3 (can do defaults)
-
-				// alert(arrayOfItems);
-
-				if (
-					inputForwards.findIndex((input, i) => {
-						if (`${input.localPort}` === arrayPort) return true;
-						return false;
-					}) !== -1
-				)
-					return alert('saw port already');
-
-				const targetNumber = topology.findIndex((box) => {
-					return box.ip === arrayTarget;
-				});
-
-				inputForwards.push({ localPort: arrayPort, target: targetNumber, direction: direction === 'L' ? 'forward' : 'reverse', targetPort: arrayTPort }); // TODO: fix potential errors with string and int
+				if (restOfString.split(':').length !== 3) return alert('invalid format');
+				const [localPort, arrayTarget, targetPort] = restOfString.split(':');
+				if (inputForwards.findIndex((input, i) => `${input.localPort}` === localPort) !== -1) return alert('saw port already');
+				const target = topology.findIndex((box) => box.ip === arrayTarget);
+				inputForwards.push({ localPort, target, direction, targetPort });
 			}
 
-			// alert(inputForwards);
 			for (const inputForward of inputForwards) {
 				// verify that the target matches the sshPort
-				// if (inputForward.targetPort !== topology[inputForward.target].sshPort) return alert('bad target port');
+				if (inputForward.targetPort !== topology[inputForward.target].sshPort) return alert('bad target port');
 
 				// verify that all the targets are correct
 				if (!arrayOfTargets.includes(inputForward.target)) return alert('target not needed');
 				arrayOfTargets = [...arrayOfTargets].filter((num) => num !== inputForward.target);
 			}
 
-			// TODO: add answer to the higher state and enable next line
 			dispatch({ type: 'submit-answer', answer: inputForwards });
 
 			event.stopPropagation();

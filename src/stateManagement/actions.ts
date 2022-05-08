@@ -1,3 +1,4 @@
+import { AppState } from './state';
 import { Answers } from './types';
 
 type SaveLSAction = {
@@ -14,22 +15,22 @@ type CycleProblemAction = {
 
 type ChangeUserAction = {
 	type: 'change-user';
-	user: string;
+	user: AppState[`currentAnswerLine`][`user`];
 };
 
 type ChangeIPAction = {
 	type: 'change-ip';
-	ip: string;
+	ip: AppState[`currentAnswerLine`][`ip`];
 };
 
 type ChangeTPortAction = {
 	type: 'change-port';
-	port: string;
+	port: AppState[`currentAnswerLine`][`port`];
 };
 
 type ChangeForwardsAction = {
 	type: 'change-forwards';
-	forwards: string[];
+	forwards: AppState[`currentAnswerLine`][`forwards`];
 };
 
 type SubmitAnswerAction = {

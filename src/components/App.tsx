@@ -14,8 +14,8 @@ export function App() {
 	return (
 		<div style={appStyle}>
 			<TopBar {...{ state, dispatch }} />
-			<NetworkDiagram {...{ state, dispatch }} />
-			<SchemeOfManeuver {...{ state, dispatch }} />
+			<NetworkDiagram {...{ state }} />
+			<SchemeOfManeuver {...{ state }} />
 			<AnswerSection {...{ state, dispatch }} />
 		</div>
 	);

@@ -46,7 +46,6 @@ export const reducer = (currentState: AppState, action: AllActions): AppState =>
 		}
 
 		case 'submit-answer': {
-			// TODO:
 			const { answer } = action;
 			let numForwards = 0;
 			for (const thisStep of problems[currentProblem].scheme) {
