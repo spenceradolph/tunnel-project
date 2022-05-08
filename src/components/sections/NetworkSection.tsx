@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 import { problems } from '../../problemSets';
-import { AllActions, AppState } from '../../stateManagement';
+import { AppState } from '../../stateManagement';
 
 const networkDiagramStyle: CSSProperties = {
 	backgroundColor: 'yellow',
@@ -16,7 +16,6 @@ const boxStyle: CSSProperties = {
 
 type Props = {
 	state: AppState;
-	dispatch: React.Dispatch<AllActions>;
 };
 
 export function NetworkDiagram({ state }: Props) {
