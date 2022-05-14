@@ -14,10 +14,18 @@ export function SchemeOfManeuver({ state }: Props) {
 	const { currentProblem } = state;
 	const { scheme, topology } = problems[currentProblem];
 
-	const schemeLines = scheme.map((step, i) => {
-		const { type, through, target } = step;
+	const numDashes = scheme.reduce(
+		(prev: { [key: number]: number }, step, i) => {
+			const { through } = step;
+			return { ...prev, [i]: prev[through] + 1 };
+		},
+		{ [-1]: -1 }
+	);
 
-		const dashes = `-`.repeat(through + 1);
+	const schemeLines = scheme.map((step, i) => {
+		const { type, target } = step;
+
+		const dashes = `-`.repeat(numDashes[i]);
 		const arrow = type === 'forward' ? `>` : `<`;
 		const { ip } = topology[target];
 
