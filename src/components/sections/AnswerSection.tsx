@@ -92,6 +92,9 @@ export function AnswerSection({ state, dispatch }: Props) {
 				if (restOfString.split(':').length !== 3) return alert('invalid format');
 				const [localPort, arrayTarget, targetPort] = restOfString.split(':');
 				if (inputForwards.findIndex((input, i) => `${input.localPort}` === localPort) !== -1) return alert('saw port already');
+
+				if (parseInt(localPort) < 1 || parseInt(localPort) > 65535) return alert('invalid format');
+
 				const target = topology.findIndex((box) => box.ip === arrayTarget);
 				inputForwards.push({ localPort, target, direction, targetPort });
 			}
